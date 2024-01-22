@@ -1,5 +1,6 @@
 import { ROUTES } from "@/common/navigation/routes";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
+import ImageWrapper from "@/components/home/ImageWrapper";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
@@ -8,7 +9,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <>
-      <MaxWidthWrapper className="mb-12 mt-28 flex flex-col items-center justify-center text-center sm:mt-40">
+      <MaxWidthWrapper className="mb-12 flex flex-col items-center justify-center pt-28 text-center sm:pt-40">
         <div className="mx-auto flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full border border-gray-200 bg-white px-7 py-2 shadow-md backdrop-blur transition-all hover:border-gray-300 hover:bg-white/50">
           <p className="text-sm font-semibold text-gray-700">
             Quill is now public
@@ -52,20 +53,16 @@ export default function Home() {
           </div>
 
           <section>
-            <div className="mx-auto max-w-6xl px-6 lg:px-8">
-              <div className="mt-16 flow-root sm:mt-24">
-                <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
-                  <Image
-                    src="/dashboard-preview.jpg"
-                    alt="product preview"
-                    width={1364}
-                    height={866}
-                    quality={100}
-                    className="rounded-md bg-white p-2 shadow-2xl ring-1 ring-gray-800/10 sm:p-8 md:p-20"
-                  />
-                </div>
-              </div>
-            </div>
+            <ImageWrapper>
+              <Image
+                src="/dashboard-preview.jpg"
+                alt="product preview"
+                width={1364}
+                height={866}
+                quality={100}
+                className="rounded-md bg-white p-2 shadow-2xl ring-1 ring-gray-800/10 sm:p-8 md:p-20"
+              />
+            </ImageWrapper>
           </section>
 
           <div
@@ -139,6 +136,17 @@ export default function Home() {
             </div>
           </li>
         </ol>
+
+        <ImageWrapper>
+          <Image
+            src="/file-upload-preview.jpg"
+            alt="uploading preview"
+            width={1419}
+            height={732}
+            quality={100}
+            className="rounded-md bg-white p-2 shadow-2xl ring-1 ring-gray-800/10 sm:p-8 md:p-20"
+          />
+        </ImageWrapper>
       </section>
     </>
   );
