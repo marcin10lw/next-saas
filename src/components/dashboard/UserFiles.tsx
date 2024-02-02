@@ -2,6 +2,7 @@
 
 import { trpc } from "@/app/_trpc/client";
 import { GhostIcon } from "lucide-react";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import Skeleton from "react-loading-skeleton";
 import FileItem from "./FileItem";
 
@@ -9,6 +10,8 @@ const UserFiles = () => {
   const { data: files, isLoading } = trpc.getUserFiles.useQuery(undefined, {
     staleTime: 0,
   });
+
+  const [listRef] = useAutoAnimate();
 
   if (!files || isLoading) {
     return (
@@ -21,7 +24,10 @@ const UserFiles = () => {
   return (
     <section>
       {files.length > 0 ? (
-        <ul className="mt-8 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
+        <ul
+          ref={listRef}
+          className="mt-8 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3"
+        >
           {files.map((file) => (
             <FileItem key={file.id} file={file} />
           ))}
