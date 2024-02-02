@@ -30,7 +30,7 @@ const FileItem = ({ file }: FileItemProps) => {
       className={cn(
         "col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow transition hover:shadow-lg",
         {
-          "opacity-50": isRemoving,
+          "pointer-events-none opacity-50": isRemoving,
         },
       )}
     >

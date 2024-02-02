@@ -2,15 +2,8 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import UploadDropzone from "./UploadDropzone";
 
 const UploadButton = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -23,7 +16,9 @@ const UploadButton = () => {
       <DialogTrigger asChild>
         <Button variant="default">Upload PDF</Button>
       </DialogTrigger>
-      <DialogContent className="">HELLO</DialogContent>
+      <DialogContent>
+        <UploadDropzone />
+      </DialogContent>
     </Dialog>
   );
 };
