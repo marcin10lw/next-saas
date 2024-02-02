@@ -1,5 +1,6 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { privateProcedure, publicProcedure, router } from "./trpc";
+import { UTApi } from "uploadthing/server";
 import { TRPCError } from "@trpc/server";
 import { db } from "@/db";
 import z from "zod";
@@ -78,6 +79,9 @@ export const appRouter = router({
           id: input.id,
         },
       });
+
+      const utapi = new UTApi();
+      await utapi.deleteFiles(file.key);
 
       return file;
     }),
