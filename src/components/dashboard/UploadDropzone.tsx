@@ -1,27 +1,35 @@
+import { trpc } from "@/app/_trpc/client";
 import { useUploadThing } from "@/lib/uploadthing";
+import { cn } from "@/lib/utils";
 import { Cloud, File } from "lucide-react";
 import { useState } from "react";
 import Dropzone from "react-dropzone";
 import { Progress } from "../ui/progress";
 import { useToast } from "../ui/use-toast";
-import { trpc } from "@/app/_trpc/client";
-import { useRouter } from "next/navigation";
-import { ROUTES } from "@/common/navigation/routes";
 
 const UploadDropzone = () => {
-  const router = useRouter();
-
-  const [isUploading, setIsUploading] = useState(false);
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const { toast } = useToast();
 
+  const onUploadError = () => {
+    setIsUploadingFile(false);
+    toast({
+      title: "Something went wrong",
+      description: "Please try again",
+      variant: "destructive",
+    });
+  };
+
   const startSimulateProgress = () => {
     setUploadProgress(0);
+
     const interval = setInterval(() => {
       setUploadProgress((prev) => {
         if (uploadProgress >= 95) {
           clearInterval(interval);
+          return 100;
         }
 
         return prev + 5;
@@ -33,37 +41,34 @@ const UploadDropzone = () => {
 
   const { startUpload } = useUploadThing("imageUploader");
 
+  const utils = trpc.useUtils();
+
   const { mutate: startPolling } = trpc.getFile.useMutation({
-    onSuccess: (file) => {
-      router.push(`${ROUTES.dashboard}/${file.id}`);
-      trpc.useUtils().getUserFiles.invalidate();
+    onSuccess: async () => {
+      await utils.getUserFiles.invalidate();
+      toast({
+        title: "PDF Successfully Uploaded!",
+      });
+      setIsUploadingFile(false);
     },
     retry: 3,
     retryDelay: 500,
   });
 
   async function onFileDrop<T extends File>(acceptedFile: T[]) {
-    setIsUploading(true);
+    setIsUploadingFile(true);
     const progressInterval = startSimulateProgress();
 
     const res = await startUpload(acceptedFile);
     if (!res) {
-      return toast({
-        title: "Something went wrong",
-        description: "Please try again",
-        variant: "destructive",
-      });
+      return onUploadError();
     }
 
     const [fileResponse] = res;
 
     const key = fileResponse.key;
     if (!key) {
-      return toast({
-        title: "Something went wrong",
-        description: "Please try again",
-        variant: "destructive",
-      });
+      return onUploadError();
     }
 
     startPolling({ key });
@@ -72,12 +77,19 @@ const UploadDropzone = () => {
     setUploadProgress(100);
   }
 
+  console.log(uploadProgress);
+
   return (
     <Dropzone multiple={false} onDrop={onFileDrop}>
       {({ getRootProps, acceptedFiles }) => (
         <div
           {...getRootProps()}
-          className="m-4 h-64 rounded-lg border border-dashed border-gray-300"
+          className={cn(
+            "m-4 h-64 rounded-lg border border-dashed border-gray-300",
+            {
+              "pointer-events-none": isUploadingFile,
+            },
+          )}
         >
           <div className="flex h-full w-full items-center justify-center">
             <div className="flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-lg bg-gray-50 hover:bg-gray-100">
@@ -102,21 +114,17 @@ const UploadDropzone = () => {
                 </div>
               )}
 
-              {isUploading && (
+              {isUploadingFile && (
                 <div className="mx-auto mt-4 w-full max-w-xs">
                   <Progress
                     value={uploadProgress}
                     className="h-1 w-full bg-zinc-200"
+                    indicatorColor={
+                      uploadProgress === 100 ? "bg-green-500" : ""
+                    }
                   />
                 </div>
               )}
-
-              {/* <input
-                {...getInputProps()}
-                type="file"
-                id="dropzone-file"
-                className="hidden"
-              /> */}
             </div>
           </div>
         </div>

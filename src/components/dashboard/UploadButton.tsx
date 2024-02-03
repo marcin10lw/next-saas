@@ -11,7 +11,9 @@ const UploadButton = () => {
   return (
     <Dialog
       open={modalOpen}
-      onOpenChange={() => setModalOpen((modalOpen) => !modalOpen)}
+      onOpenChange={() => {
+        setModalOpen((modalOpen) => !modalOpen);
+      }}
     >
       <DialogTrigger asChild>
         <Button variant="default">Upload PDF</Button>

@@ -21,6 +21,7 @@ export const fileRouter = {
           name: file.name,
           userId: metadata.userId,
           url: file.url,
+          uploadStatus: "PROCESSING",
         },
       });
       return { uploadedBy: metadata.userId, file: file };
