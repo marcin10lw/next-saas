@@ -1,4 +1,3 @@
-import { trpc } from "@/app/_trpc/client";
 import { ROUTES } from "@/common/navigation/routes";
 import ChatWrapper from "@/components/dashboard/ChatWrapper";
 import PdfRenderer from "@/components/dashboard/PdfRenderer";
@@ -42,7 +41,7 @@ const Page = async ({ params }: PageProps) => {
       <section className="mx-auto w-full max-w-screen-2xl grow lg:flex xl:px-2">
         <article className="flex-1 xl:flex">
           <div className="px-4 py-6 sm:px-6 lg:pl-8 xl:flex-1 xl:pl-6">
-            <PdfRenderer />
+            <PdfRenderer fileUrl={file.url} />
           </div>
         </article>
 

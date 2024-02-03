@@ -29,7 +29,7 @@ const UploadDropzone = () => {
       setUploadProgress((prev) => {
         if (uploadProgress >= 95) {
           clearInterval(interval);
-          return 100;
+          return uploadProgress;
         }
 
         return prev + 5;
@@ -76,8 +76,6 @@ const UploadDropzone = () => {
     clearInterval(progressInterval);
     setUploadProgress(100);
   }
-
-  console.log(uploadProgress);
 
   return (
     <Dropzone multiple={false} onDrop={onFileDrop}>
