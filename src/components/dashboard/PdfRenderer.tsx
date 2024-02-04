@@ -1,29 +1,39 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { Document, Page, pdfjs } from "react-pdf";
 import { useResizeDetector } from "react-resize-detector";
+import z from "zod";
 import { useToast } from "../ui/use-toast";
 
-import { useState } from "react";
+import { cn } from "@/lib/utils";
+import Skeleton from "react-loading-skeleton";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import Skeleton from "react-loading-skeleton";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 const PdfLoader = () => (
-  <div className="mt-10 flex h-full justify-center">
-    <Loader2 className="h-8 w-8 animate-spin" />
+  <div className="h-full px-2 pb-3 pt-1">
+    <Skeleton count={1} height={810} width="100%" className="h-full w-full" />
   </div>
 );
 
-const PfgLoadError = () => (
+const PfgLoadError = ({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) => (
   <div className="mt-10 flex h-full flex-col items-center gap-2">
-    <h3 className="text-2xl font-semibold">Could not read PDF</h3>
-    <p className="text-lg text-zinc-500">Please try again</p>
+    <h3 className="text-2xl font-semibold">{title}</h3>
+    <p className="text-lg text-zinc-500">{description}</p>
   </div>
 );
 
@@ -39,15 +49,39 @@ const PdfRenderer = ({ fileUrl }: PdfRendererProps) => {
 
   const { ref, width } = useResizeDetector();
 
+  const CustomPageValidator = z.object({
+    page: z
+      .string()
+      .refine((number) => Number(number) > 0 && Number(number) <= numPages!),
+  });
+  type TCustomPageValidator = z.infer<typeof CustomPageValidator>;
+
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    setValue,
+  } = useForm<TCustomPageValidator>({
+    defaultValues: {
+      page: "1",
+    },
+    resolver: zodResolver(CustomPageValidator),
+  });
+
   const onPdfLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
+  };
+
+  const handlePageSubmit = ({ page }: TCustomPageValidator) => {
+    setCurrentPage(Number(page));
+    setValue("page", page);
   };
 
   return (
     <div className="flex h-full w-full flex-col items-center rounded-md bg-white shadow">
       <div className="flex h-14 w-full items-center justify-between border-b border-zinc-200 px-2">
         {numPages === null ? (
-          <div className="w-full h-full pb-3 pt-1">
+          <div className="h-full w-full pb-3 pt-1">
             <Skeleton count={1} height="100%" />
           </div>
         ) : (
@@ -59,6 +93,8 @@ const PdfRenderer = ({ fileUrl }: PdfRendererProps) => {
               onClick={() =>
                 setCurrentPage((prevPage) => {
                   if (prevPage === 1) return 1;
+
+                  setValue("page", String(prevPage - 1));
                   return prevPage - 1;
                 })
               }
@@ -68,14 +104,18 @@ const PdfRenderer = ({ fileUrl }: PdfRendererProps) => {
 
             <div className="flex items-center gap-1.5">
               <Input
-                value={currentPage}
-                onChange={({ currentTarget }) =>
-                  setCurrentPage(currentTarget.valueAsNumber)
-                }
-                type="number"
-                className="h-8 w-14"
-                min={1}
-                max={numPages}
+                {...register("page")}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    handleSubmit(handlePageSubmit)();
+                  }
+                }}
+                className={cn(
+                  "h-8 w-14 focus-visible:ring-0 focus-visible:ring-offset-0",
+                  {
+                    "border border-red-800": !!errors.page,
+                  },
+                )}
               />
               <p className="space-x-1 text-sm text-zinc-700">
                 <span>/</span>
@@ -90,6 +130,8 @@ const PdfRenderer = ({ fileUrl }: PdfRendererProps) => {
               onClick={() =>
                 setCurrentPage((prevPage) => {
                   if (prevPage >= numPages) return numPages;
+
+                  setValue("page", String(prevPage + 1));
                   return prevPage + 1;
                 })
               }
@@ -104,7 +146,10 @@ const PdfRenderer = ({ fileUrl }: PdfRendererProps) => {
         <div ref={ref}>
           <Document
             loading={PdfLoader}
-            error={PfgLoadError}
+            error={PfgLoadError({
+              title: "Could not read PDF",
+              description: "Please try again",
+            })}
             onLoadSuccess={onPdfLoadSuccess}
             onLoadError={() => {
               toast({
@@ -118,6 +163,10 @@ const PdfRenderer = ({ fileUrl }: PdfRendererProps) => {
           >
             <Page
               loading={PdfLoader}
+              noData={PfgLoadError({
+                title: "Invalid page",
+                description: `Please enter page within ${numPages}`,
+              })}
               width={width ? width : 1}
               pageNumber={currentPage}
             />

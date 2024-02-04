@@ -40,7 +40,7 @@ const Page = async ({ params }: PageProps) => {
     <main className="flex h-[calc(100vh-3.5rem)] flex-1 flex-col justify-between">
       <section className="mx-auto w-full max-w-screen-2xl grow lg:flex xl:px-2">
         <article className="flex-1 xl:flex">
-          <div className="px-4 py-6 sm:px-6 lg:pl-8 xl:flex-1 xl:pl-6">
+          <div className="h-full px-4 py-6 sm:px-6 lg:pl-8 xl:flex-1 xl:pl-6">
             <PdfRenderer fileUrl={file.url} />
           </div>
         </article>
