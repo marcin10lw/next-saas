@@ -27,9 +27,9 @@ const UploadDropzone = () => {
 
     const interval = setInterval(() => {
       setUploadProgress((prev) => {
-        if (uploadProgress >= 95) {
+        if (prev === 100) {
           clearInterval(interval);
-          return uploadProgress;
+          return prev;
         }
 
         return prev + 5;
@@ -121,6 +121,11 @@ const UploadDropzone = () => {
                       uploadProgress === 100 ? "bg-green-500" : ""
                     }
                   />
+                  {uploadProgress === 100 && (
+                    <p className="mt-2 animate-pulse text-center text-sm text-zinc-600">
+                      Almost there...
+                    </p>
+                  )}
                 </div>
               )}
             </div>
