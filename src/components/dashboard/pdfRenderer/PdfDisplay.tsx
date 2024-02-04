@@ -2,6 +2,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Document, Page, pdfjs } from "react-pdf";
 import { useResizeDetector } from "react-resize-detector";
 
+import { usePdfRendererContext } from "./PrfRendererContext";
 import Skeleton from "react-loading-skeleton";
 import SimpleBar from "simplebar-react";
 
@@ -11,21 +12,10 @@ import "./style.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
-interface PdfDisplayProps {
-  fileUrl: string;
-  currentPage: number;
-  numPages: number | null;
-  scale: number;
-  setNumPages: React.Dispatch<React.SetStateAction<number | null>>;
-}
+const PdfDisplay = ({ fileUrl }: { fileUrl: string }) => {
+  const { currentPage, numPages, rotation, scale, setNumPages } =
+    usePdfRendererContext();
 
-const PdfDisplay = ({
-  currentPage,
-  fileUrl,
-  numPages,
-  scale,
-  setNumPages,
-}: PdfDisplayProps) => {
   const { toast } = useToast();
 
   const { ref, width } = useResizeDetector();
@@ -35,8 +25,8 @@ const PdfDisplay = ({
   };
 
   return (
-    <div className="max-h-screen w-full flex-1">
-      <SimpleBar autoHide={false} className="max-h-[calc(100vh-10rem)]">
+    <div className="h-full max-h-screen w-full flex-1">
+      <SimpleBar autoHide={true} className="h-full max-h-[calc(100vh-10rem)]">
         <div ref={ref}>
           <Document
             loading={PdfLoader}
@@ -64,6 +54,7 @@ const PdfDisplay = ({
               width={width ? width : 1}
               pageNumber={currentPage}
               scale={scale}
+              rotate={rotation}
             />
           </Document>
         </div>

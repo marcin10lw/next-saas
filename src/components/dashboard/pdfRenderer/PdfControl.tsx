@@ -1,34 +1,38 @@
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import z from "zod";
 
-import { cn } from "@/lib/utils";
+import { usePdfRendererContext } from "./PrfRendererContext";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ChevronDown, ChevronLeft, ChevronRight, Search } from "lucide-react";
-import Skeleton from "react-loading-skeleton";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  RotateCw,
+  Search,
+} from "lucide-react";
+import Skeleton from "react-loading-skeleton";
+import PdfFullScreen from "./PdfFullScreen";
 
-interface PdfControlProps {
-  numPages: number | null;
-  currentPage: number;
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
-  scale: number;
-  setScale: React.Dispatch<React.SetStateAction<number>>;
-}
+const PdfControl = () => {
+  const {
+    currentPage,
+    numPages,
+    scale,
+    setCurrentPage,
+    setNumPages,
+    setRotation,
+    setScale,
+  } = usePdfRendererContext();
 
-const PdfControl = ({
-  numPages,
-  currentPage,
-  setCurrentPage,
-  scale,
-  setScale,
-}: PdfControlProps) => {
   const CustomPageValidator = z.object({
     page: z
       .string()
@@ -135,28 +139,40 @@ const PdfControl = ({
             </Button>
           </div>
 
-          <div className="space-x-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  aria-label="zoom"
-                  variant="ghost"
-                  className="gap-1.5 text-zinc-700"
-                >
-                  <Search className="h-4 w-4" />
-                  <span>{scale * 100}%</span>
-                  <ChevronDown className="h-3 w-3 opacity-50" />
-                </Button>
-              </DropdownMenuTrigger>
+          <div className="flex items-center gap-2">
+            <div className="space-x-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    aria-label="zoom"
+                    variant="ghost"
+                    className="gap-1.5 text-zinc-700"
+                  >
+                    <Search className="h-4 w-4" />
+                    <span>{scale * 100}%</span>
+                    <ChevronDown className="h-3 w-3 opacity-50" />
+                  </Button>
+                </DropdownMenuTrigger>
 
-              <DropdownMenuContent>
-                {scaleList.map(({ id, value }) => (
-                  <DropdownMenuItem key={id} onSelect={() => setScale(value)}>
-                    {value * 100}%
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+                <DropdownMenuContent>
+                  {scaleList.map(({ id, value }) => (
+                    <DropdownMenuItem key={id} onSelect={() => setScale(value)}>
+                      {value * 100}%
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            <Button
+              aria-label="rotate 90 degrees"
+              variant="ghost"
+              onClick={() => setRotation((rotation) => rotation + 90)}
+            >
+              <RotateCw className="h-4 w-4 text-zinc-700" />
+            </Button>
+
+            <PdfFullScreen />
           </div>
         </div>
       )}
