@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils";
 import { Cloud, File } from "lucide-react";
 import { useState } from "react";
 import Dropzone from "react-dropzone";
-import { Progress } from "../ui/progress";
-import { useToast } from "../ui/use-toast";
+import { Progress } from "../../ui/progress";
+import { useToast } from "../../ui/use-toast";
 
 const UploadDropzone = () => {
   const [isUploadingFile, setIsUploadingFile] = useState(false);

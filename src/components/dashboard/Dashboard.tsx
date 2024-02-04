@@ -1,4 +1,4 @@
-import UploadButton from "./UploadButton";
+import UploadButton from "./upload/UploadButton";
 import UserFiles from "./UserFiles";
 
 const Dashboard = () => {
