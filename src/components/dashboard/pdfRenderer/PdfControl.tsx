@@ -167,7 +167,11 @@ const PdfControl = () => {
             <Button
               aria-label="rotate 90 degrees"
               variant="ghost"
-              onClick={() => setRotation((rotation) => rotation + 90)}
+              onClick={() =>
+                setRotation((rotation) =>
+                  rotation === 270 ? 0 : rotation + 90,
+                )
+              }
             >
               <RotateCw className="h-4 w-4 text-zinc-700" />
             </Button>

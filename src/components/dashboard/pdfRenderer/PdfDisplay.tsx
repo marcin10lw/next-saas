@@ -10,7 +10,12 @@ import "./style.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
-const PdfDisplay = ({ pageWidth }: { pageWidth?: number }) => {
+interface PdfDisplayProps {
+  pageWidth?: number;
+  isFullscreen?: boolean;
+}
+
+const PdfDisplay = ({ pageWidth, isFullscreen }: PdfDisplayProps) => {
   const { currentPage, numPages, rotation, scale, setNumPages, fileUrl } =
     usePdfRendererContext();
 
@@ -38,17 +43,30 @@ const PdfDisplay = ({ pageWidth }: { pageWidth?: number }) => {
       file={fileUrl}
       className="max-h-full"
     >
-      <Page
-        loading={PdfLoader}
-        noData={PfgLoadError({
-          title: "Invalid page",
-          description: `Please enter page within ${numPages}`,
-        })}
-        width={pageWidth ? pageWidth : 1}
-        pageNumber={currentPage}
-        scale={scale}
-        rotate={rotation}
-      />
+      {isFullscreen ? (
+        <>
+          {new Array(numPages).fill(0).map((_, i) => (
+            <Page
+              key={i}
+              loading={PdfLoader}
+              width={pageWidth ? pageWidth : 1}
+              pageNumber={i + 1}
+            />
+          ))}
+        </>
+      ) : (
+        <Page
+          loading={PdfLoader}
+          noData={PfgLoadError({
+            title: "Invalid page",
+            description: `Please enter page within ${numPages}`,
+          })}
+          width={pageWidth ? pageWidth : 1}
+          pageNumber={currentPage}
+          scale={scale}
+          rotate={rotation}
+        />
+      )}
     </Document>
   );
 };

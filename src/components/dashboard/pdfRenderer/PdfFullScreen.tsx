@@ -32,7 +32,7 @@ const PdfFullScreen = () => {
           style={{ width: "100%" }}
         >
           <div ref={ref}>
-            <PdfDisplay pageWidth={width} />
+            <PdfDisplay pageWidth={width} isFullscreen />
           </div>
         </SimpleBar>
       </DialogContent>
