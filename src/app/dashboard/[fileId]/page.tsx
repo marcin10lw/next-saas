@@ -1,6 +1,6 @@
 import { ROUTES } from "@/common/navigation/routes";
 import ChatWrapper from "@/components/dashboard/ChatWrapper";
-import PdfRenderer from "@/components/dashboard/PdfRenderer";
+import PdfRenderer from "@/components/dashboard/pdfRenderer/PdfRenderer";
 import { db } from "@/db";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { notFound, redirect } from "next/navigation";
