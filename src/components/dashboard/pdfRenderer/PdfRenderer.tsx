@@ -12,18 +12,22 @@ interface PdfRendererProps {
 const PdfRenderer = ({ fileUrl }: PdfRendererProps) => {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [scale, setScale] = useState(1);
 
   return (
     <div className="flex h-full w-full flex-col items-center rounded-md bg-white shadow">
       <PdfControl
-        currentPage={currentPage}
         numPages={numPages}
+        currentPage={currentPage}
         setCurrentPage={setCurrentPage}
+        scale={scale}
+        setScale={setScale}
       />
       <PdfDisplay
         currentPage={currentPage}
         fileUrl={fileUrl}
         numPages={numPages}
+        scale={scale}
         setNumPages={setNumPages}
       />
     </div>
