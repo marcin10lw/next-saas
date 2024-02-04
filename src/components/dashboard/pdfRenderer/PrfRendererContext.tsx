@@ -16,11 +16,15 @@ interface PdfRendererContextProps {
   setScale: Dispatch<SetStateAction<number>>;
   rotation: number;
   setRotation: Dispatch<SetStateAction<number>>;
+  fileUrl: string;
 }
 
 const PdfRendererContext = createContext({} as PdfRendererContextProps);
 
-const PdfRendererContextProvider = ({ children }: PropsWithChildren) => {
+const PdfRendererContextProvider = ({
+  children,
+  fileUrl,
+}: PropsWithChildren<{ fileUrl: string }>) => {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [scale, setScale] = useState(1);
@@ -35,6 +39,7 @@ const PdfRendererContextProvider = ({ children }: PropsWithChildren) => {
     setScale,
     rotation,
     setRotation,
+    fileUrl,
   };
 
   return (

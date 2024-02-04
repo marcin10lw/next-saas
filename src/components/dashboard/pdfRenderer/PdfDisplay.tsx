@@ -1,10 +1,8 @@
 import { useToast } from "@/components/ui/use-toast";
 import { Document, Page, pdfjs } from "react-pdf";
-import { useResizeDetector } from "react-resize-detector";
 
-import { usePdfRendererContext } from "./PrfRendererContext";
 import Skeleton from "react-loading-skeleton";
-import SimpleBar from "simplebar-react";
+import { usePdfRendererContext } from "./PrfRendererContext";
 
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
@@ -12,54 +10,46 @@ import "./style.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
-const PdfDisplay = ({ fileUrl }: { fileUrl: string }) => {
-  const { currentPage, numPages, rotation, scale, setNumPages } =
+const PdfDisplay = ({ pageWidth }: { pageWidth?: number }) => {
+  const { currentPage, numPages, rotation, scale, setNumPages, fileUrl } =
     usePdfRendererContext();
 
   const { toast } = useToast();
-
-  const { ref, width } = useResizeDetector();
 
   const onPdfLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
   };
 
   return (
-    <div className="h-full max-h-screen w-full flex-1">
-      <SimpleBar autoHide={true} className="h-full max-h-[calc(100vh-10rem)]">
-        <div ref={ref}>
-          <Document
-            loading={PdfLoader}
-            error={PfgLoadError({
-              title: "Could not read PDF",
-              description: "Please try again",
-            })}
-            onLoadSuccess={onPdfLoadSuccess}
-            onLoadError={() => {
-              toast({
-                title: "Error loading PDF",
-                description: "Please try again later",
-                variant: "destructive",
-              });
-            }}
-            file={fileUrl}
-            className="max-h-full"
-          >
-            <Page
-              loading={PdfLoader}
-              noData={PfgLoadError({
-                title: "Invalid page",
-                description: `Please enter page within ${numPages}`,
-              })}
-              width={width ? width : 1}
-              pageNumber={currentPage}
-              scale={scale}
-              rotate={rotation}
-            />
-          </Document>
-        </div>
-      </SimpleBar>
-    </div>
+    <Document
+      loading={PdfLoader}
+      error={PfgLoadError({
+        title: "Could not read PDF",
+        description: "Please try again",
+      })}
+      onLoadSuccess={onPdfLoadSuccess}
+      onLoadError={() => {
+        toast({
+          title: "Error loading PDF",
+          description: "Please try again later",
+          variant: "destructive",
+        });
+      }}
+      file={fileUrl}
+      className="max-h-full"
+    >
+      <Page
+        loading={PdfLoader}
+        noData={PfgLoadError({
+          title: "Invalid page",
+          description: `Please enter page within ${numPages}`,
+        })}
+        width={pageWidth ? pageWidth : 1}
+        pageNumber={currentPage}
+        scale={scale}
+        rotate={rotation}
+      />
+    </Document>
   );
 };
 
