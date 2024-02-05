@@ -29,7 +29,7 @@ const ChatWrapper = ({ fileId }: ChatWrapperProps) => {
   if (data?.status === "FAILED") return <ChatStatusInfo variant="FAILED" />;
 
   return (
-    <div className="relative flex min-h-full flex-col justify-between gap-2 divide-y divide-zinc-200 bg-zinc-50">
+    <div className="relative flex min-h-screen flex-col justify-between gap-2 divide-y divide-zinc-200 bg-zinc-50 lg:min-h-full">
       <div className="mb-28 flex flex-1 flex-col justify-between">
         <ChatMessages />
       </div>
