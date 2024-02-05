@@ -1,5 +1,5 @@
 import { ROUTES } from "@/common/navigation/routes";
-import ChatWrapper from "@/components/dashboard/ChatWrapper";
+import ChatWrapper from "@/components/dashboard/chat/ChatWrapper";
 import PdfRenderer from "@/components/dashboard/pdfRenderer/PdfRenderer";
 import { db } from "@/db";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
@@ -45,8 +45,8 @@ const Page = async ({ params }: PageProps) => {
           </div>
         </article>
 
-        <article className="border-7 flex-[0.75] shrink-0 border-gray-200 lg:w-96 lg:border-l lg:border-t-0">
-          <ChatWrapper />
+        <article className="border-7 flex-[0.75] shrink-0 border-gray-200 px-4 py-6 sm:px-6 lg:w-96 lg:border-l lg:border-t-0">
+          <ChatWrapper fileId={file.id} />
         </article>
       </section>
     </main>

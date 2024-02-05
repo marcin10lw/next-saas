@@ -24,7 +24,6 @@ export const fileRouter = {
           uploadStatus: "PROCESSING",
         },
       });
-      return { uploadedBy: metadata.userId, file: file };
     }),
 } satisfies FileRouter;
 
