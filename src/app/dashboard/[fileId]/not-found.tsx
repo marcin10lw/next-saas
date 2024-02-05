@@ -5,12 +5,13 @@ import Link from "next/link";
 
 const NotFoundFilePage = () => {
   return (
-    <NotFoundPage>
+    <NotFoundPage title="File not found">
       <Link
         href={ROUTES.dashboard}
+        replace
         className={buttonVariants({
           variant: "link",
-          className: "mt-4 text-2xl underline hover:opacity-90",
+          className: "text-2xl underline hover:opacity-90",
         })}
       >
         Dashboard

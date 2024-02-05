@@ -51,6 +51,7 @@ const PdfDisplay = ({ pageWidth, isFullscreen }: PdfDisplayProps) => {
               loading={PdfLoader}
               width={pageWidth ? pageWidth : 1}
               pageNumber={i + 1}
+              className="border-b border-zinc-300"
             />
           ))}
         </>
