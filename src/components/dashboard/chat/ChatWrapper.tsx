@@ -4,6 +4,7 @@ import { trpc } from "@/app/_trpc/client";
 import ChatInput from "./ChatInput";
 import ChatMessages from "./ChatMessages";
 import ChatStatusInfo from "./ChatStatusInfo";
+import ChatContextProvider from "./ChatContext";
 
 interface ChatWrapperProps {
   fileId: string;
@@ -29,13 +30,15 @@ const ChatWrapper = ({ fileId }: ChatWrapperProps) => {
   if (data?.status === "FAILED") return <ChatStatusInfo variant="FAILED" />;
 
   return (
-    <div className="relative flex min-h-screen flex-col justify-between gap-2 divide-y divide-zinc-200 bg-zinc-50 lg:min-h-full">
-      <div className="mb-28 flex flex-1 flex-col justify-between">
-        <ChatMessages />
-      </div>
+    <ChatContextProvider fileId={fileId}>
+      <div className="relative flex min-h-screen flex-col justify-between gap-2 divide-y divide-zinc-200 bg-zinc-50 lg:min-h-full">
+        <div className="mb-28 flex flex-1 flex-col justify-between">
+          <ChatMessages />
+        </div>
 
-      <ChatInput />
-    </div>
+        <ChatInput />
+      </div>
+    </ChatContextProvider>
   );
 };
 

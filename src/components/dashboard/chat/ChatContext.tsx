@@ -2,7 +2,13 @@
 
 import { useToast } from "@/components/ui/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { PropsWithChildren, ReactNode, createContext, useState } from "react";
+import {
+  PropsWithChildren,
+  ReactNode,
+  createContext,
+  useContext,
+  useState,
+} from "react";
 
 interface ChatContextProps {
   addMessage: () => void;
@@ -60,5 +66,7 @@ const ChatContextProvider = ({
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 };
+
+export const useChatContext = () => useContext(ChatContext);
 
 export default ChatContextProvider;
