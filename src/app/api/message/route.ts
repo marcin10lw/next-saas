@@ -36,7 +36,7 @@ export const POST = async (req: NextRequest) => {
       text: message,
       isUserMessage: true,
       userId: user.id,
-      fileId: fileId,
+      fileId: file.id,
     },
   });
 

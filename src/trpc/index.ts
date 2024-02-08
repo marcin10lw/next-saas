@@ -82,13 +82,6 @@ export const appRouter = router({
         },
       });
 
-      await db.message.deleteMany({
-        where: {
-          fileId: file.id,
-          userId: ctx.userId,
-        },
-      });
-
       const utapi = new UTApi();
       await utapi.deleteFiles(file.key);
 
