@@ -5,6 +5,7 @@ import { TRPCError } from "@trpc/server";
 import { db } from "@/db";
 import z from "zod";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
+import { pinecone } from "@/lib/pinecone";
 
 export const appRouter = router({
   authCallback: publicProcedure.query(async () => {
@@ -78,6 +79,13 @@ export const appRouter = router({
         where: {
           userId: ctx.userId,
           id: input.id,
+        },
+      });
+
+      await db.message.deleteMany({
+        where: {
+          fileId: file.id,
+          userId: ctx.userId,
         },
       });
 
