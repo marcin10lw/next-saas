@@ -15,10 +15,7 @@ const ChatWrapper = ({ fileId }: ChatWrapperProps) => {
     { fileId },
     {
       refetchInterval: (data) =>
-        data.state.data?.status === "SUCCESS" ||
-        data.state.data?.status === "FAILED"
-          ? false
-          : 500,
+        data?.status === "SUCCESS" || data?.status === "FAILED" ? false : 500,
     },
   );
 

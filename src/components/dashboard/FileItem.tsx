@@ -13,7 +13,7 @@ interface FileItemProps {
 const FileItem = ({ file }: FileItemProps) => {
   const utils = trpc.useUtils();
 
-  const { mutate: removeFile, isPending: isRemoving } =
+  const { mutate: removeFile, isLoading: isRemoving } =
     trpc.removeUserFile.useMutation({
       onSuccess: async () => {
         await utils.getUserFiles.invalidate();
