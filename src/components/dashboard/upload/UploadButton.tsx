@@ -7,6 +7,7 @@ import UploadDropzone from "./UploadDropzone";
 
 const UploadButton = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
 
   return (
     <Dialog
@@ -18,8 +19,17 @@ const UploadButton = () => {
       <DialogTrigger asChild>
         <Button variant="default">Upload PDF</Button>
       </DialogTrigger>
-      <DialogContent>
-        <UploadDropzone />
+      <DialogContent
+        onInteractOutside={(event) => {
+          if (isUploadingFile) {
+            event.preventDefault();
+          }
+        }}
+      >
+        <UploadDropzone
+          isUploadingFile={isUploadingFile}
+          setIsUploadingFile={setIsUploadingFile}
+        />
       </DialogContent>
     </Dialog>
   );

@@ -7,8 +7,15 @@ import Dropzone from "react-dropzone";
 import { Progress } from "../../ui/progress";
 import { useToast } from "../../ui/use-toast";
 
-const UploadDropzone = () => {
-  const [isUploadingFile, setIsUploadingFile] = useState(false);
+interface UploadDropzoneProps {
+  isUploadingFile: boolean;
+  setIsUploadingFile: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const UploadDropzone = ({
+  isUploadingFile,
+  setIsUploadingFile,
+}: UploadDropzoneProps) => {
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const { toast } = useToast();
