@@ -1,18 +1,25 @@
 import { trpc } from "@/app/_trpc/client";
+import { useInView } from "react-intersection-observer";
+
 import { Loader2, MessageSquare } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import Message from "./Message";
 import { useChatContext } from "./ChatContext";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
+import { useEffect } from "react";
 
 interface ChatMessagesProps {
   fileId: string;
 }
 
 const ChatMessages = ({ fileId }: ChatMessagesProps) => {
+  const { ref, inView } = useInView({
+    threshold: 1,
+  });
+
   const { isLoading: isAiResLoading } = useChatContext();
 
-  const { data, isLoading, fetchNextPage } =
+  const { data, isLoading, fetchNextPage, isFetchingNextPage } =
     trpc.getFileMessages.useInfiniteQuery(
       { fileId, limit: INFINITE_QUERY_LIMIT },
       {
@@ -20,6 +27,12 @@ const ChatMessages = ({ fileId }: ChatMessagesProps) => {
         keepPreviousData: true,
       },
     );
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView, fetchNextPage]);
 
   const messages = data?.pages.flatMap((page) => page.messages);
 
@@ -51,6 +64,7 @@ const ChatMessages = ({ fileId }: ChatMessagesProps) => {
             return (
               <Message
                 key={message.id}
+                ref={ref}
                 isNextMessageSamePerson={isNextMessageSamePerson}
                 message={message}
               />
@@ -79,6 +93,12 @@ const ChatMessages = ({ fileId }: ChatMessagesProps) => {
           <p className="text-zinc-500">
             Ask your first question to get started.
           </p>
+        </div>
+      )}
+
+      {inView && isFetchingNextPage && (
+        <div className="my-2 flex justify-center">
+          <Loader2 className="h-4 w-4 animate-spin" />
         </div>
       )}
     </div>
