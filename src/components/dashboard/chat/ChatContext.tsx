@@ -1,14 +1,10 @@
 "use client";
 
+import { trpc } from "@/app/_trpc/client";
 import { useToast } from "@/components/ui/use-toast";
+import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
 import { useMutation } from "@tanstack/react-query";
-import {
-  PropsWithChildren,
-  ReactNode,
-  createContext,
-  useContext,
-  useState,
-} from "react";
+import { ReactNode, createContext, useContext, useRef, useState } from "react";
 
 interface ChatContextProps {
   addMessage: () => void;
@@ -31,11 +27,14 @@ const ChatContextProvider = ({
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { toast } = useToast();
-
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(event.target.value);
   };
+
+  const { toast } = useToast();
+
+  const utils = trpc.useUtils();
+  const messageRef = useRef("");
 
   const { mutate: sendMessage } = useMutation({
     mutationFn: async ({ message }: { message: string }) => {
@@ -48,18 +47,100 @@ const ChatContextProvider = ({
       });
 
       if (!response.ok) {
-        throw Error("Failed to send message");
+        throw new Error("Failed to send message");
       }
 
       return response.body;
     },
+    onMutate: async ({ message }) => {
+      messageRef.current = message;
+      setMessage("");
+
+      await utils.getFileMessages.cancel();
+
+      const prevInfiniteMessages = utils.getFileMessages.getInfiniteData({
+        fileId,
+        limit: INFINITE_QUERY_LIMIT,
+      });
+
+      utils.getFileMessages.setInfiniteData(
+        { fileId, limit: INFINITE_QUERY_LIMIT },
+        (old) => {
+          if (!old) {
+            return { pages: [], pageParams: [] };
+          }
+
+          let newPages = [...old.pages];
+          let latestPage = newPages[0];
+
+          const newMessage = {
+            id: "optimistic-message",
+            createdAt: new Date().toISOString(),
+            text: message,
+            isUserMessage: true,
+          };
+
+          latestPage.messages = [newMessage, ...latestPage.messages];
+
+          newPages[0] = latestPage;
+
+          setIsLoading(true);
+
+          return {
+            ...old,
+            pages: newPages,
+          };
+        },
+      );
+
+      return {
+        prevInfiniteMessages: prevInfiniteMessages,
+      };
+    },
+    onSuccess: async (streamData) => {},
+    onError: (_, __, context) => {
+      utils.getFileMessages.setInfiniteData(
+        {
+          fileId,
+          limit: INFINITE_QUERY_LIMIT,
+        },
+        (old) => {
+          const prevInfiniteData = context?.prevInfiniteMessages;
+
+          if (!prevInfiniteData) {
+            return old;
+          }
+
+          let prevPages = [...prevInfiniteData.pages];
+          prevPages[0].messages =
+            prevPages[0].messages.slice(-INFINITE_QUERY_LIMIT);
+
+          return {
+            ...prevInfiniteData,
+            pages: prevPages,
+          };
+        },
+      );
+      setMessage(messageRef.current);
+      toast({
+        title: "Could not send message",
+        description: "Please refresh page and try again",
+        variant: "destructive",
+      });
+    },
+    onSettled: async () => {
+      setIsLoading(false);
+      await utils.getFileMessages.invalidate();
+    },
   });
 
-  const addMessage = () => sendMessage({ message });
+  const addMessage = () => {
+    sendMessage({ message });
+  };
 
   const value: ChatContextProps = {
     addMessage,
-    isLoading: false,
+    isLoading,
     message,
     handleInputChange,
   };

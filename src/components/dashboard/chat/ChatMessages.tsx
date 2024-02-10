@@ -2,17 +2,22 @@ import { trpc } from "@/app/_trpc/client";
 import { Loader2, MessageSquare } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import Message from "./Message";
+import { useChatContext } from "./ChatContext";
+import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
 
 interface ChatMessagesProps {
   fileId: string;
 }
 
 const ChatMessages = ({ fileId }: ChatMessagesProps) => {
+  const { isLoading: isAiResLoading } = useChatContext();
+
   const { data, isLoading, fetchNextPage } =
     trpc.getFileMessages.useInfiniteQuery(
-      { fileId },
+      { fileId, limit: INFINITE_QUERY_LIMIT },
       {
         getNextPageParam: (lastPage) => lastPage?.nextCursor,
+        keepPreviousData: true,
       },
     );
 
@@ -30,7 +35,7 @@ const ChatMessages = ({ fileId }: ChatMessagesProps) => {
   };
 
   const combinedMessages = [
-    ...(true ? [loadingMessage] : []),
+    ...(isAiResLoading ? [loadingMessage] : []),
     ...(messages ?? []),
   ];
 
@@ -68,7 +73,7 @@ const ChatMessages = ({ fileId }: ChatMessagesProps) => {
           <Skeleton className="h-16" />
         </div>
       ) : (
-        <div className="flex flex-1 flex-col items-start justify-center gap-2">
+        <div className="flex flex-1 flex-col items-center justify-center gap-2">
           <MessageSquare className="h-8 w-8 text-zinc-700" />
           <h3 className="text-xl font-semibold">You&apos;re all set!</h3>
           <p className="text-zinc-500">
