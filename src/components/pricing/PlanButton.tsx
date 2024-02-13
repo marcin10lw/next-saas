@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 import { ROUTES } from "@/common/navigation/routes";
-import UpgradeButton from "@/components/UpgradeButton";
+import UpgradeButton from "@/components/pricing/UpgradeButton";
 import { buttonVariants } from "@/components/ui/button";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
 

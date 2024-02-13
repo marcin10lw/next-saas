@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight, Loader2 } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { trpc } from "@/app/_trpc/client";
 import { ROUTES } from "@/common/navigation/routes";
 
