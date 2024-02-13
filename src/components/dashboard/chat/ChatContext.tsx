@@ -98,30 +98,20 @@ const ChatContextProvider = ({
       };
     },
     onSuccess: async (stream) => {
-      setIsLoading(false);
+      if (!stream) return;
 
-      if (!stream) {
-        return toast({
-          title: "There was a problem sending this message",
-          description: "Please refresh the page and try again",
-          variant: "destructive",
-        });
-      }
-
+      const textDecoder = new TextDecoder();
       const reader = stream.getReader();
-      const decoder = new TextDecoder();
 
-      let done = false;
+      let doneReading = false;
+      let accText = "";
 
-      // accumulated response
-      let accResponse = "";
+      while (!doneReading) {
+        const { value, done } = await reader.read();
+        doneReading = done;
 
-      while (!done) {
-        const { value, done: doneReading } = await reader.read();
-        done = doneReading;
-        const chunkValue = decoder.decode(value);
-
-        accResponse += chunkValue;
+        const text = textDecoder.decode(value);
+        accText += text;
 
         utils.getFileMessages.setInfiniteData(
           { fileId, limit: INFINITE_QUERY_LIMIT },
@@ -134,39 +124,41 @@ const ChatContextProvider = ({
             }
 
             const AI_RESPONSE_ID = "ai-response";
-            let isAiResponseCreated = old.pages.some((page) =>
+
+            const isAnyAiMessage = old.pages.some((page) =>
               page.messages.some((message) => message.id === AI_RESPONSE_ID),
             );
 
             let updatedPages = old.pages.map((page) => {
               if (page === old.pages[0]) {
-                let updatedMessages;
+                let messages;
 
-                if (!isAiResponseCreated) {
-                  updatedMessages = [
+                if (!isAnyAiMessage) {
+                  messages = [
                     {
                       id: AI_RESPONSE_ID,
                       createdAt: new Date().toISOString(),
-                      text: accResponse,
+                      text: accText,
                       isUserMessage: false,
                     },
                     ...page.messages,
                   ];
                 } else {
-                  updatedMessages = page.messages.map((message) => {
+                  messages = page.messages.map((message) => {
                     if (message.id === AI_RESPONSE_ID) {
                       return {
                         ...message,
-                        text: accResponse,
+                        text: accText,
                       };
                     }
+
                     return message;
                   });
                 }
 
                 return {
                   ...page,
-                  messages: updatedMessages,
+                  messages,
                 };
               }
 
