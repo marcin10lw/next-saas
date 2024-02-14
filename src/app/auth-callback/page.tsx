@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { ROUTES } from "@/common/navigation/routes";
 import { Loader2 } from "lucide-react";
 
-const AuthCallback = () => {
+const Page = () => {
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -37,4 +37,4 @@ const AuthCallback = () => {
   );
 };
 
-export default AuthCallback;
+export default Page;
