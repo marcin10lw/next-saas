@@ -5,6 +5,7 @@ import { ROUTES } from "@/common/navigation/routes";
 import UpgradeButton from "@/components/pricing/UpgradeButton";
 import { buttonVariants } from "@/components/ui/button";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
+import { LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
 
 interface PlanButtonProps {
   user: KindeUser | null;
@@ -12,34 +13,49 @@ interface PlanButtonProps {
 }
 
 const PlanButton = ({ user, plan }: PlanButtonProps) => {
-  return (
-    <>
-      {plan === "Free" ? (
-        <Link
-          href={user ? ROUTES.dashboard : ROUTES.signIn}
-          className={buttonVariants({
-            variant: "secondary",
-            className: "w-full",
-          })}
-        >
-          {user ? "Upgrade now" : "Sign up"}
-          <ArrowRight className="ml-1.5 h-5 w-5" />
-        </Link>
-      ) : user ? (
-        <UpgradeButton />
-      ) : (
-        <Link
-          href={ROUTES.signIn}
-          className={buttonVariants({
-            className: "w-full",
-          })}
-        >
-          Sign up
-          <ArrowRight className="ml-1.5 h-5 w-5" />
-        </Link>
-      )}
-    </>
-  );
+  if (plan === "Free") {
+    return user ? (
+      <Link
+        href={ROUTES.billing}
+        className={buttonVariants({
+          variant: "secondary",
+          className: "w-full",
+        })}
+      >
+        Upgrade now
+        <ArrowRight className="ml-1.5 h-5 w-5" />
+      </Link>
+    ) : (
+      <LoginLink
+        postLoginRedirectURL="/pricing"
+        className={buttonVariants({
+          variant: "secondary",
+          className: "w-full",
+        })}
+      >
+        Sign up
+        <ArrowRight className="ml-1.5 h-5 w-5" />
+      </LoginLink>
+    );
+  }
+
+  if (plan === "Pro") {
+    return user ? (
+      <UpgradeButton />
+    ) : (
+      <LoginLink
+        postLoginRedirectURL="/pricing"
+        className={buttonVariants({
+          className: "w-full",
+        })}
+      >
+        Sign up
+        <ArrowRight className="ml-1.5 h-5 w-5" />
+      </LoginLink>
+    );
+  }
+
+  return null;
 };
 
 export default PlanButton;
