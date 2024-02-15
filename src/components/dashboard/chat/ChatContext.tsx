@@ -100,6 +100,8 @@ const ChatContextProvider = ({
     onSuccess: async (stream) => {
       if (!stream) return;
 
+      setIsLoading(false);
+
       const textDecoder = new TextDecoder();
       const reader = stream.getReader();
 

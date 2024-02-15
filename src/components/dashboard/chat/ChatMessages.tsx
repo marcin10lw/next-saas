@@ -2,7 +2,6 @@ import { trpc } from "@/app/_trpc/client";
 import { useInView } from "react-intersection-observer";
 
 import { Loader2, MessageSquare } from "lucide-react";
-import Skeleton from "react-loading-skeleton";
 import Message from "./Message";
 import { useChatContext } from "./ChatContext";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
@@ -80,11 +79,8 @@ const ChatMessages = ({ fileId }: ChatMessagesProps) => {
           }
         })
       ) : isLoading ? (
-        <div className="flex w-full flex-col gap-2">
-          <Skeleton className="h-16" />
-          <Skeleton className="h-16" />
-          <Skeleton className="h-16" />
-          <Skeleton className="h-16" />
+        <div className="my-auto flex justify-center">
+          <Loader2 className="h-10 w-10 animate-spin" />
         </div>
       ) : (
         <div className="flex flex-1 flex-col items-center justify-center gap-2">
