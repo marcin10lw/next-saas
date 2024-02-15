@@ -34,11 +34,10 @@ export async function POST(request: Request) {
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string,
     );
-    console.log(subscription);
 
     await db.user.update({
       where: {
-        id: subscription.metadata.userId,
+        id: session.metadata.userId,
       },
       data: {
         stripeSubscriptionId: subscription.id,
