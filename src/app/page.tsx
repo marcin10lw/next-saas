@@ -16,8 +16,11 @@ export default function Home() {
           </p>
         </div>
         <h1 className="mt-2 max-w-4xl text-5xl font-bold md:text-6xl lg:text-7xl">
-          Chat with your <span className="text-blue-600">documents</span> in
-          seconds.
+          Chat with your{" "}
+          <span className="bg-gradient-to-r from-purple-800 to-blue-500 bg-clip-text text-transparent">
+            documents
+          </span>{" "}
+          in seconds.
         </h1>
         <p className="mt-5 max-w-prose text-zinc-700 sm:text-lg">
           Quill allows you to have conversations with any PDF document. Simply
@@ -103,7 +106,7 @@ export default function Home() {
                 Either staring out with a free plan or choose our{" "}
                 <Link
                   href={ROUTES.pricing}
-                  className="text-blue-700 underline underline-offset-2"
+                  className="text-purple-800 underline underline-offset-2"
                 >
                   pro plan
                 </Link>
