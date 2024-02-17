@@ -63,6 +63,22 @@ export const appRouter = router({
 
       return file;
     }),
+  getFileMessagesAmt: privateProcedure
+    .input(
+      z.object({
+        fileId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const fileMessagesAmt = await db.message.count({
+        where: {
+          userId: ctx.userId,
+          fileId: input.fileId,
+        },
+      });
+
+      return fileMessagesAmt;
+    }),
   removeUserFile: privateProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {

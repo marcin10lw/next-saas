@@ -13,6 +13,14 @@ interface FileItemProps {
 const FileItem = ({ file }: FileItemProps) => {
   const utils = trpc.useUtils();
 
+  const { data: fileMessagesAmt, isLoading: isFileMessagesAmtLoading } =
+    trpc.getFileMessagesAmt.useQuery(
+      { fileId: file.id },
+      {
+        refetchOnMount: true,
+      },
+    );
+
   const { mutate: removeFile, isLoading: isRemoving } =
     trpc.removeUserFile.useMutation({
       onSuccess: async () => {
@@ -51,15 +59,21 @@ const FileItem = ({ file }: FileItemProps) => {
         </div>
       </Link>
 
-      <div className="mt-4 grid grid-cols-3 place-items-center gap-6 px-6 py-2 text-xs text-zinc-500">
-        <div className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          {dayjs(new Date(file.createdAt)).format("MMM D, YYYY")}
-        </div>
+      <div className="mt-4 flex items-center justify-between gap-6 px-6 py-2 text-xs text-zinc-500">
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            {dayjs(new Date(file.createdAt)).format("MMM D, YYYY")}
+          </div>
 
-        <div className="flex items-center gap-2">
-          <MessageSquare className="h-4 w-4" />
-          mocked
+          <div className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4" />
+            {isFileMessagesAmtLoading ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              fileMessagesAmt
+            )}
+          </div>
         </div>
 
         <Button
