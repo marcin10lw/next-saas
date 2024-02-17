@@ -3,18 +3,16 @@ import { ROUTES } from "@/common/navigation/routes";
 import { cn } from "@/lib/utils";
 import { UserFile } from "@/types/file";
 import dayjs from "dayjs";
-import { Loader2, MessageSquare, Plus, Trash } from "lucide-react";
+import { Loader2, MessageSquare, Plus } from "lucide-react";
 import Link from "next/link";
-import { Button } from "../../ui/button";
 import FileTitle from "./FileTitle";
+import RemoveFile from "./RemoveFile";
 
 interface FileItemProps {
   file: UserFile;
 }
 
 const FileItem = ({ file }: FileItemProps) => {
-  const utils = trpc.useUtils();
-
   const { data: fileMessagesAmt, isLoading: isFileMessagesAmtLoading } =
     trpc.getFileMessagesAmt.useQuery(
       { fileId: file.id },
@@ -23,16 +21,7 @@ const FileItem = ({ file }: FileItemProps) => {
       },
     );
 
-  const { mutate: removeFile, isLoading: isRemoving } =
-    trpc.removeUserFile.useMutation({
-      onSuccess: async () => {
-        await utils.getUserFiles.invalidate();
-      },
-    });
-
-  const deleteFile = async () => {
-    removeFile({ id: file.id });
-  };
+  const { isLoading: isRemoving } = trpc.removeUserFile.useMutation();
 
   return (
     <li
@@ -68,17 +57,7 @@ const FileItem = ({ file }: FileItemProps) => {
           </div>
         </div>
 
-        <Button
-          variant="destructive"
-          className="h-fit w-fit p-2"
-          onClick={deleteFile}
-        >
-          {isRemoving ? (
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-          ) : (
-            <Trash className="h-3.5 w-3.5" />
-          )}
-        </Button>
+        <RemoveFile fileId={file.id} />
       </div>
     </li>
   );
