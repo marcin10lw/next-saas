@@ -9,7 +9,7 @@ export async function middleware(req: NextRequest) {
 
   if (
     !user &&
-    protectedRoutes.some((route) => route.includes(req.nextUrl.pathname))
+    protectedRoutes.some((route) => req.nextUrl.pathname.includes(route))
   ) {
     const absoluteURL = new URL("/", req.nextUrl.origin);
     return NextResponse.redirect(absoluteURL.toString());
