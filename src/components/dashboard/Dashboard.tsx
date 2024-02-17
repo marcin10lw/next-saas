@@ -1,5 +1,5 @@
 import { SubscriptionPlan } from "@/types/subscriptionPlan";
-import UserFiles from "./UserFiles";
+import UserFiles from "./filesList/UserFiles";
 import UploadButton from "./upload/UploadButton";
 
 interface DashboardProps {
