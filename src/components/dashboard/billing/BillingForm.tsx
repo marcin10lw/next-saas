@@ -51,12 +51,12 @@ const BillingForm = ({ subscriptionPlan }: BillingFormProps) => {
           <CardHeader>
             <CardTitle>Subscription Plan</CardTitle>
             <CardDescription>
-              You are currently on the <strong>{subscriptionPlan.name}</strong>
+              You are currently on the <strong>{subscriptionPlan.name}</strong>{" "}
               plan
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p>Card Content</p>
+            {/* <p>Card Content</p> */}
           </CardContent>
           <CardFooter className="flex flex-col items-start gap-2">
             <Button disabled={isLoading} type="submit" className="flex gap-2">

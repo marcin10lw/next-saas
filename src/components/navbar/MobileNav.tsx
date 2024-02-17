@@ -40,11 +40,11 @@ const MobileNav = ({ user }: MobileNavProps) => {
       {menuOpen && (
         <>
           <div
-            className="fixed inset-0 z-0 bg-black/50 animate-in fade-in-20"
+            className="fixed inset-0 top-14 z-0 bg-black/50 animate-in fade-in-20"
             onClick={() => setMenuOpen(false)}
           />
-          <div className="fixed left-0 top-0 z-0 w-full animate-in fade-in-20 slide-in-from-top-5">
-            <ul className="absolute grid w-full gap-3 border-b border-zinc-200 bg-white px-10 pb-8 pt-20 shadow-xl">
+          <div className="fixed left-0 top-14 z-0 w-full">
+            <ul className="absolute grid w-full gap-3 border-b border-zinc-200 bg-white px-10 pb-8 pt-6 shadow-xl">
               {!user ? (
                 <>
                   <li>
@@ -76,6 +76,16 @@ const MobileNav = ({ user }: MobileNavProps) => {
                       className="flex w-full items-center gap-1.5 font-semibold"
                     >
                       Dashboard <ArrowRight className="ml-1.5 h-5 w-5" />
+                    </Link>
+                  </li>
+                  <li className="my-3 h-px w-full bg-gray-300" />
+                  <li>
+                    <Link
+                      href={ROUTES.billing}
+                      className="flex w-full items-center gap-1.5 font-semibold"
+                    >
+                      Manage subscription{" "}
+                      <ArrowRight className="ml-1.5 h-5 w-5" />
                     </Link>
                   </li>
                   <li className="my-3 h-px w-full bg-gray-300" />
