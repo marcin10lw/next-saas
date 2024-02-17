@@ -63,6 +63,21 @@ export const appRouter = router({
 
       return file;
     }),
+  updateFileName: privateProcedure
+    .input(
+      z.object({ fileId: z.string(), fileName: z.string().min(1).max(50) }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await db.file.update({
+        where: {
+          id: input.fileId,
+          userId: ctx.userId,
+        },
+        data: {
+          name: input.fileName,
+        },
+      });
+    }),
   getFileMessagesAmt: privateProcedure
     .input(
       z.object({
