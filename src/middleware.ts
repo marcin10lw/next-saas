@@ -7,7 +7,10 @@ export async function middleware(req: NextRequest) {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
 
-  if (!user && protectedRoutes.includes(req.nextUrl.pathname)) {
+  if (
+    !user &&
+    protectedRoutes.some((route) => route.includes(req.nextUrl.pathname))
+  ) {
     const absoluteURL = new URL("/", req.nextUrl.origin);
     return NextResponse.redirect(absoluteURL.toString());
   }
