@@ -2,6 +2,7 @@ import { ROUTES } from "@/common/navigation/routes";
 import ChatWrapper from "@/components/dashboard/chat/ChatWrapper";
 import PdfRenderer from "@/components/dashboard/pdfRenderer/PdfRenderer";
 import { db } from "@/db";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { notFound, redirect } from "next/navigation";
 
@@ -36,6 +37,8 @@ const Page = async ({ params }: PageProps) => {
     notFound();
   }
 
+  const subscriptionPlan = await getUserSubscriptionPlan();
+
   return (
     <main className="flex h-[calc(100vh-3.5rem)] flex-1 flex-col justify-between">
       <section className="mx-auto w-full max-w-screen-2xl grow lg:flex xl:px-2">
@@ -46,7 +49,7 @@ const Page = async ({ params }: PageProps) => {
         </article>
 
         <article className="border-7 flex-[0.75] shrink-0 border-gray-200 px-4 py-6 sm:px-6 lg:w-96 lg:border-l lg:border-t-0">
-          <ChatWrapper fileId={file.id} />
+          <ChatWrapper fileId={file.id} subscriptionPlan={subscriptionPlan} />
         </article>
       </section>
     </main>

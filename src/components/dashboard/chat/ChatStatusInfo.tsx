@@ -5,8 +5,9 @@ import { ChevronLeft, Loader2, XCircle } from "lucide-react";
 import { ROUTES } from "@/common/navigation/routes";
 import { buttonVariants } from "@/components/ui/button";
 import ChatInput from "./ChatInput";
+import { SubscriptionPlan } from "@/types/subscriptionPlan";
 
-interface ChatStatusInfoProps {
+interface ChatStatusInfoWrapperProps {
   icon: ReactNode;
   title: string | ReactNode;
   description: string | ReactNode;
@@ -16,7 +17,7 @@ const ChatStatusInfoWrapper = ({
   icon,
   title,
   description,
-}: ChatStatusInfoProps) => {
+}: ChatStatusInfoWrapperProps) => {
   return (
     <div className="relative flex min-h-full flex-col justify-between gap-2 divide-y divide-zinc-200 bg-zinc-50">
       <div className="mb-28 flex flex-1 flex-col items-center justify-center">
@@ -34,7 +35,12 @@ const ChatStatusInfoWrapper = ({
 
 type Status = "LOADING" | "PROCESSING" | "FAILED";
 
-const ChatStatusInfo = ({ variant }: { variant: Status }) => {
+interface ChatStatusInfoProps {
+  variant: Status;
+  subscriptionPlan?: SubscriptionPlan;
+}
+
+const ChatStatusInfo = ({ variant, subscriptionPlan }: ChatStatusInfoProps) => {
   const statusRecord: Record<Status, ReactNode> = {
     LOADING: (
       <ChatStatusInfoWrapper
@@ -63,8 +69,12 @@ const ChatStatusInfo = ({ variant }: { variant: Status }) => {
         description={
           <>
             <p className="text-sm text-zinc-500">
-              Your <span className="font-medium">Free</span> plan supports up to
-              5 pages per PDF
+              Your <span className="font-medium">{subscriptionPlan?.name}</span>{" "}
+              plan supports{" "}
+              <strong className="font-medium">
+                up to {subscriptionPlan?.pagesPerPdf} pages
+              </strong>{" "}
+              per PDF
             </p>
             <Link
               href={ROUTES.dashboard}

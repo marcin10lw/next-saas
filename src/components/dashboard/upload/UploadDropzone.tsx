@@ -8,11 +8,13 @@ import { Progress } from "../../ui/progress";
 import { useToast } from "../../ui/use-toast";
 
 interface UploadDropzoneProps {
+  isSubscribed: boolean;
   isUploadingFile: boolean;
   setIsUploadingFile: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const UploadDropzone = ({
+  isSubscribed,
   isUploadingFile,
   setIsUploadingFile,
 }: UploadDropzoneProps) => {
@@ -46,7 +48,11 @@ const UploadDropzone = ({
     return interval;
   };
 
-  const { startUpload } = useUploadThing("imageUploader");
+  const uploader = isSubscribed
+    ? "proPlanUploader"
+    : ("freePlanUploader" as const);
+
+  const { startUpload } = useUploadThing(uploader);
 
   const utils = trpc.useUtils();
 
@@ -84,6 +90,8 @@ const UploadDropzone = ({
     setUploadProgress(100);
   }
 
+  const fileSize = isSubscribed ? "16MB" : "4MB";
+
   return (
     <Dropzone multiple={false} onDrop={onFileDrop}>
       {({ getRootProps, acceptedFiles }) => (
@@ -104,7 +112,7 @@ const UploadDropzone = ({
                   <span className="font-semibold">Click to upload</span> or drag
                   and drop
                 </p>
-                <p className="text-xs text-zinc-500">PDF (up to 4MB)</p>
+                <p className="text-xs text-zinc-500">PDF (up to {fileSize})</p>
               </div>
 
               {!!acceptedFiles && !!acceptedFiles[0] && (

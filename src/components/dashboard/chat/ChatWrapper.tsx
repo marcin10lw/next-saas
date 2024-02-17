@@ -5,12 +5,14 @@ import ChatInput from "./ChatInput";
 import ChatMessages from "./ChatMessages";
 import ChatStatusInfo from "./ChatStatusInfo";
 import ChatContextProvider from "./ChatContext";
+import { SubscriptionPlan } from "@/types/subscriptionPlan";
 
 interface ChatWrapperProps {
+  subscriptionPlan: SubscriptionPlan;
   fileId: string;
 }
 
-const ChatWrapper = ({ fileId }: ChatWrapperProps) => {
+const ChatWrapper = ({ fileId, subscriptionPlan }: ChatWrapperProps) => {
   const { data, isLoading } = trpc.getFileUploadStatus.useQuery(
     { fileId },
     {
@@ -24,7 +26,10 @@ const ChatWrapper = ({ fileId }: ChatWrapperProps) => {
   if (data?.status === "PROCESSING")
     return <ChatStatusInfo variant="PROCESSING" />;
 
-  if (data?.status === "FAILED") return <ChatStatusInfo variant="FAILED" />;
+  if (data?.status === "FAILED")
+    return (
+      <ChatStatusInfo subscriptionPlan={subscriptionPlan} variant="FAILED" />
+    );
 
   return (
     <ChatContextProvider fileId={fileId}>

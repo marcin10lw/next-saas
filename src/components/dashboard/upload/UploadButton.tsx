@@ -4,8 +4,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import UploadDropzone from "./UploadDropzone";
+import { SubscriptionPlan } from "@/types/subscriptionPlan";
 
-const UploadButton = () => {
+const UploadButton = ({ isSubscribed }: { isSubscribed: boolean }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [isUploadingFile, setIsUploadingFile] = useState(false);
 
@@ -27,6 +28,7 @@ const UploadButton = () => {
         }}
       >
         <UploadDropzone
+          isSubscribed={isSubscribed}
           isUploadingFile={isUploadingFile}
           setIsUploadingFile={setIsUploadingFile}
         />

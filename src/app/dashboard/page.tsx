@@ -1,6 +1,7 @@
 import { ROUTES } from "@/common/navigation/routes";
 import Dashboard from "@/components/dashboard/Dashboard";
 import { db } from "@/db";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -18,7 +19,9 @@ const Page = async () => {
     redirect(`${ROUTES.authCallback}?origin=${ROUTES.dashboard.substring(1)}`);
   }
 
-  return <Dashboard />;
+  const subscriptionPlan = await getUserSubscriptionPlan();
+
+  return <Dashboard subscriptionPlan={subscriptionPlan} />;
 };
 
 export default Page;

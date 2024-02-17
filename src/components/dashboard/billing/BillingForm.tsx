@@ -2,8 +2,7 @@
 
 import { trpc } from "@/app/_trpc/client";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
-import { useToast } from "@/components/ui/use-toast";
-import { getUserSubscriptionPlan } from "@/lib/stripe";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,12 +11,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { SubscriptionPlan } from "@/types/subscriptionPlan";
 import dayjs from "dayjs";
+import { Loader2 } from "lucide-react";
 
 interface BillingFormProps {
-  subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
+  subscriptionPlan: SubscriptionPlan;
 }
 
 const BillingForm = ({ subscriptionPlan }: BillingFormProps) => {
@@ -55,9 +55,7 @@ const BillingForm = ({ subscriptionPlan }: BillingFormProps) => {
               plan
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            {/* <p>Card Content</p> */}
-          </CardContent>
+          <CardContent>{/* <p>Card Content</p> */}</CardContent>
           <CardFooter className="flex flex-col items-start gap-2">
             <Button disabled={isLoading} type="submit" className="flex gap-2">
               {subscriptionPlan.isSubscribed
