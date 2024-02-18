@@ -76,11 +76,21 @@ const ChatStatusInfo = ({ variant, subscriptionPlan }: ChatStatusInfoProps) => {
               </strong>{" "}
               per PDF
             </p>
+            {!subscriptionPlan?.isSubscribed && (
+              <Link
+                href={ROUTES.pricing}
+                className={buttonVariants({
+                  className: "mt-2",
+                })}
+              >
+                Upgrade to Pro
+              </Link>
+            )}
             <Link
               href={ROUTES.dashboard}
               className={buttonVariants({
                 variant: "secondary",
-                className: "mt-4",
+                className: "-ml-1 mt-2",
               })}
             >
               <ChevronLeft className="mr-1.5 h-3 w-3" />

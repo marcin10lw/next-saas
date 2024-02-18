@@ -56,14 +56,15 @@ const ChatContextProvider = ({
       messageRef.current = message;
       setMessage("");
 
-      await utils.getFileMessages.cancel();
+      await utils.message.getFileMessages.cancel();
 
-      const prevInfiniteMessages = utils.getFileMessages.getInfiniteData({
-        fileId,
-        limit: INFINITE_QUERY_LIMIT,
-      });
+      const prevInfiniteMessages =
+        utils.message.getFileMessages.getInfiniteData({
+          fileId,
+          limit: INFINITE_QUERY_LIMIT,
+        });
 
-      utils.getFileMessages.setInfiniteData(
+      utils.message.getFileMessages.setInfiniteData(
         { fileId, limit: INFINITE_QUERY_LIMIT },
         (old) => {
           if (!old) {
@@ -115,7 +116,7 @@ const ChatContextProvider = ({
         const text = textDecoder.decode(value);
         accText += text;
 
-        utils.getFileMessages.setInfiniteData(
+        utils.message.getFileMessages.setInfiniteData(
           { fileId, limit: INFINITE_QUERY_LIMIT },
           (old) => {
             if (!old) {
@@ -176,7 +177,7 @@ const ChatContextProvider = ({
       }
     },
     onError: (_, __, context) => {
-      utils.getFileMessages.setInfiniteData(
+      utils.message.getFileMessages.setInfiniteData(
         {
           fileId,
           limit: INFINITE_QUERY_LIMIT,
@@ -207,7 +208,7 @@ const ChatContextProvider = ({
     },
     onSettled: async () => {
       setIsLoading(false);
-      await utils.getFileMessages.invalidate({ fileId });
+      await utils.message.getFileMessages.invalidate({ fileId });
     },
   });
 
