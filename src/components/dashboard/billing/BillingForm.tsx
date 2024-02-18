@@ -55,7 +55,7 @@ const BillingForm = ({ subscriptionPlan }: BillingFormProps) => {
               plan
             </CardDescription>
           </CardHeader>
-          <CardContent>{/* <p>Card Content</p> */}</CardContent>
+          {/* <CardContent><p>Card Content</p></CardContent> */}
           <CardFooter className="flex flex-col items-start gap-2">
             <Button disabled={isLoading} type="submit" className="flex gap-2">
               {subscriptionPlan.isSubscribed
