@@ -1,4 +1,5 @@
-import { type ClassValue, clsx } from "clsx";
+import { PLANS } from "@/config/stripe";
+import { clsx, type ClassValue } from "clsx";
 import { Metadata } from "next";
 import { twMerge } from "tailwind-merge";
 
@@ -13,6 +14,17 @@ export function absoluteUrl(path: string) {
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}${path}`;
   return `http://localhost:${process.env.PORT ?? 3000}${path}`;
 }
+
+export const checkIsPagesAmtExceeded = (
+  pagesAmount: number,
+  planName: string,
+) => {
+  return (
+    pagesAmount >
+    PLANS.find((plan) => plan.name.toLocaleLowerCase() === planName)!
+      .pagesPerPdf
+  );
+};
 
 export function constructMetadata({
   title = "Quill",

@@ -1,12 +1,12 @@
 import { db } from "@/db";
-import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { PDFLoader } from "langchain/document_loaders/fs/pdf";
-import { OpenAIEmbeddings } from "@langchain/openai";
+import { getPageLevelDocs } from "@/lib/getPagesAmount";
 import { pinecone } from "@/lib/pinecone";
-import { PineconeStore } from "@langchain/pinecone";
 import { getUserSubscriptionPlan } from "@/lib/stripe";
-import { PLANS } from "@/config/stripe";
+import { checkIsPagesAmtExceeded } from "@/lib/utils";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { PineconeStore } from "@langchain/pinecone";
+import { createUploadthing, type FileRouter } from "uploadthing/next";
 
 const f = createUploadthing();
 
@@ -51,26 +51,14 @@ const onUploadComplete = async ({
   });
 
   try {
-    const res = await fetch(file.url);
-    const blob = await res.blob();
-
-    const loader = new PDFLoader(blob);
-    const pageLevelDocs = await loader.load();
-
+    const { pageLevelDocs } = await getPageLevelDocs(file.url);
     const pagesAmount = pageLevelDocs.length;
 
     const { subscriptionPlan } = metadata;
     const { isSubscribed } = subscriptionPlan;
 
-    const isProExceeded =
-      pagesAmount >
-      PLANS.find((plan) => plan.name.toLocaleLowerCase() === "pro")!
-        .pagesPerPdf;
-
-    const isFreeExceeded =
-      pagesAmount >
-      PLANS.find((plan) => plan.name.toLocaleLowerCase() === "free")!
-        .pagesPerPdf;
+    const isProExceeded = checkIsPagesAmtExceeded(pagesAmount, "pro");
+    const isFreeExceeded = checkIsPagesAmtExceeded(pagesAmount, "free");
 
     if ((isSubscribed && isProExceeded) || (!isSubscribed && isFreeExceeded)) {
       await db.file.update({
