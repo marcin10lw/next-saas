@@ -1,6 +1,6 @@
 import { RouterOutput } from "@/app/_trpc/client";
 
-type Messages = RouterOutput["getFileMessages"]["messages"];
+type Messages = RouterOutput["message"]["getFileMessages"]["messages"];
 
 type OmitTextMessage = Omit<Messages[number], "text">;
 
