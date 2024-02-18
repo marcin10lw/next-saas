@@ -13,9 +13,9 @@ const RemoveFile = ({ fileId }: { fileId: string }) => {
   const { toast } = useToast();
 
   const { mutate: removeFile, isLoading: isRemoving } =
-    trpc.removeUserFile.useMutation({
+    trpc.file.removeUserFile.useMutation({
       onSuccess: async () => {
-        await utils.getUserFiles.invalidate();
+        await utils.file.getUserFiles.invalidate();
       },
       onError: () => {
         toast({

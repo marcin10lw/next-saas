@@ -19,7 +19,7 @@ const ChatMessages = ({ fileId }: ChatMessagesProps) => {
   const { isLoading: isAiResLoading } = useChatContext();
 
   const { data, isLoading, fetchNextPage, isFetchingNextPage } =
-    trpc.getFileMessages.useInfiniteQuery(
+    trpc.message.getFileMessages.useInfiniteQuery(
       { fileId, limit: INFINITE_QUERY_LIMIT },
       {
         getNextPageParam: (lastPage) => lastPage?.nextCursor,

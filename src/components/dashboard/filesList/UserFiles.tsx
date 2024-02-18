@@ -7,9 +7,12 @@ import Skeleton from "react-loading-skeleton";
 import FileItem from "./FileItem";
 
 const UserFiles = () => {
-  const { data: files, isLoading } = trpc.getUserFiles.useQuery(undefined, {
-    staleTime: 0,
-  });
+  const { data: files, isLoading } = trpc.file.getUserFiles.useQuery(
+    undefined,
+    {
+      staleTime: 0,
+    },
+  );
 
   const [listRef] = useAutoAnimate();
 

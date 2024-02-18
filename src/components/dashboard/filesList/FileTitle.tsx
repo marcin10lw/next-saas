@@ -19,7 +19,7 @@ const FileTitle = ({ file }: FileTitleProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { mutate: updateFileName, isLoading: isUpdatingFileName } =
-    trpc.updateFileName.useMutation({
+    trpc.file.updateFileName.useMutation({
       onSuccess: () => {
         toast({
           title: "Name updated successfully.",

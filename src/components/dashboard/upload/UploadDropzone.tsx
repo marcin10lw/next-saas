@@ -56,9 +56,9 @@ const UploadDropzone = ({
 
   const utils = trpc.useUtils();
 
-  const { mutate: startPolling } = trpc.getFile.useMutation({
+  const { mutate: startPolling } = trpc.file.getFile.useMutation({
     onSuccess: async () => {
-      await utils.getUserFiles.invalidate();
+      await utils.file.getUserFiles.invalidate();
       toast({
         title: "PDF Successfully Uploaded!",
       });

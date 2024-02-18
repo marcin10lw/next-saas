@@ -14,14 +14,14 @@ interface FileItemProps {
 
 const FileItem = ({ file }: FileItemProps) => {
   const { data: fileMessagesAmt, isLoading: isFileMessagesAmtLoading } =
-    trpc.getFileMessagesAmt.useQuery(
+    trpc.message.getFileMessagesAmt.useQuery(
       { fileId: file.id },
       {
         refetchOnMount: true,
       },
     );
 
-  const { isLoading: isRemoving } = trpc.removeUserFile.useMutation();
+  const { isLoading: isRemoving } = trpc.file.removeUserFile.useMutation();
 
   return (
     <li
