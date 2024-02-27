@@ -91,6 +91,7 @@ const onUploadComplete = async ({
       },
       data: {
         uploadStatus: "SUCCESS",
+        embedded: true,
       },
     });
   } catch (error) {

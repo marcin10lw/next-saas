@@ -129,26 +129,39 @@ export const fileRouter = router({
 
       if (file.uploadStatus === "FAILED" && isSubscribed && !isProExceeded) {
         try {
-          const pineconeIndex = pinecone.Index("quill");
+          if (!file.embedded) {
+            const pineconeIndex = pinecone.Index("quill");
 
-          const embeddings = new OpenAIEmbeddings({
-            openAIApiKey: process.env.OPENAI_API_KEY,
-          });
+            const embeddings = new OpenAIEmbeddings({
+              openAIApiKey: process.env.OPENAI_API_KEY,
+            });
 
-          await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
-            pineconeIndex,
-            namespace: file.id,
-          });
+            await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
+              pineconeIndex,
+              namespace: file.id,
+            });
 
-          await db.file.update({
-            where: {
-              id: file.id,
-              userId,
-            },
-            data: {
-              uploadStatus: "SUCCESS",
-            },
-          });
+            await db.file.update({
+              where: {
+                id: file.id,
+                userId,
+              },
+              data: {
+                embedded: true,
+                uploadStatus: "SUCCESS",
+              },
+            });
+          } else {
+            await db.file.update({
+              where: {
+                id: file.id,
+                userId,
+              },
+              data: {
+                uploadStatus: "SUCCESS",
+              },
+            });
+          }
 
           return { message: "PDF processed" as const };
         } catch (error) {
